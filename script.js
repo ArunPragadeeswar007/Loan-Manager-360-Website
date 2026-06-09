@@ -123,66 +123,7 @@
 
   revealElements.forEach((el) => revealObserver.observe(el));
 
-  // ===== ANIMATED COUNTERS =====
-  let countersAnimated = false;
 
-  function animateCounters() {
-    if (countersAnimated) return;
-
-    statNumbers.forEach((el) => {
-      const target = parseFloat(el.getAttribute('data-target'));
-      const suffix = el.getAttribute('data-suffix') || '';
-      const isDecimal = el.getAttribute('data-decimal') === 'true';
-      const duration = 2000; // ms
-      const startTime = performance.now();
-
-      function updateCounter(currentTime) {
-        const elapsed = currentTime - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-
-        // Ease-out cubic
-        const eased = 1 - Math.pow(1 - progress, 3);
-        const current = target * eased;
-
-        if (isDecimal) {
-          el.textContent = current.toFixed(1) + suffix;
-        } else {
-          el.textContent = Math.floor(current).toLocaleString() + suffix;
-        }
-
-        if (progress < 1) {
-          requestAnimationFrame(updateCounter);
-        } else {
-          // Ensure final value is exact
-          if (isDecimal) {
-            el.textContent = target.toFixed(1) + suffix;
-          } else {
-            el.textContent = target.toLocaleString() + suffix;
-          }
-        }
-      }
-
-      requestAnimationFrame(updateCounter);
-    });
-
-    countersAnimated = true;
-  }
-
-  // Observe the stats section
-  const statsSection = document.getElementById('stats');
-  if (statsSection) {
-    const statsObserver = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            animateCounters();
-          }
-        });
-      },
-      { threshold: 0.3 }
-    );
-    statsObserver.observe(statsSection);
-  }
 
   // ===== SMOOTH SCROLL FOR ALL ANCHOR LINKS =====
   document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
